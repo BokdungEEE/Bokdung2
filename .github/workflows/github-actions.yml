@@ -78,8 +78,12 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
 #          envs: GITHUB_SHA
           script: |
+            sudo docker ps
+            sudo docker pull ${{ secrets.DOCKERHUB_REPO }}
+            sudo docker run -d -p 80:8080 ${{ secrets.DOCKERHUB_REPO }}
+            sudo docker image prune -f
 #            sudo docker stop prod-server
 #            sudo docker rm prod-server
 #            sudo docker image rm ${{ secrets.DOCKERHUB_REPO }}
-            sudo docker pull ${{ secrets.DOCKERHUB_REPO }}
-            sudo docker run -d -p 80:8080 ${{ secrets.DOCKERHUB_REPO }}
+#            sudo docker pull ${{ secrets.DOCKERHUB_REPO }}
+#            sudo docker run -d -p 80:8080 ${{ secrets.DOCKERHUB_REPO }}
