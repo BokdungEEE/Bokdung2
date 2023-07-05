@@ -50,7 +50,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew build
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#      - name: Build with Gradle
+#        run: ./gradlew build -x test
 
       # docker build & push to production
       - name: Docker build & push to prod
