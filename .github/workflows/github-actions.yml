@@ -23,16 +23,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-#      # gradle caching - 빌드 시간 향상
-#      - name: Gradle Caching
-#        uses: actions/cache@v3
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
+      # gradle caching - 빌드 시간 향상
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       # 환경 yml 파일 생성 - application.yml
       - name: make application.yml
@@ -59,27 +59,20 @@ jobs:
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
           docker build -t ${{ secrets.DOCKERHUB_REPO }} .
           docker push ${{ secrets.DOCKERHUB_REPO }}
-      #          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-      #          docker build -f Dockerfile-dev -t ${{ secrets.DOCKERHUB_USERNAME }}/bokdung2 .
-      #          docker push ${{ secrets.DOCKERHUB_USERNAME }}/bokdung2
 
       ## deploy to production
       - name: Deploy to prod
         uses: appleboy/ssh-action@master
         id: deploy-prod
-        #        if: contains(github.ref, 'main')
+        #if: contains(github.ref, 'main')
         with:
           host: ${{ secrets.HOST_EC2 }} # EC2 퍼블릭 IPv4 DNS
           username: ubuntu
           key: ${{ secrets.PRIVATE_KEY }}
-          #          envs: GITHUB_SHA
+          #envs: GITHUB_SHA
           script: |
             sudo docker ps
+            sudo docker image rm ${{ secrets.DOCKERHUB_REPO }}
             sudo docker pull ${{ secrets.DOCKERHUB_REPO }}
             sudo docker run -d -p 80:8080 ${{ secrets.DOCKERHUB_REPO }}
             sudo docker image prune -f
-#            sudo docker stop prod-server
-#            sudo docker rm prod-server
-#            sudo docker image rm ${{ secrets.DOCKERHUB_REPO }}
-#            sudo docker pull ${{ secrets.DOCKERHUB_REPO }}
-#            sudo docker run -d -p 80:8080 ${{ secrets.DOCKERHUB_REPO }}
