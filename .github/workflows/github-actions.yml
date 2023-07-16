@@ -36,9 +36,9 @@ jobs:
 
       # 환경 yml 파일 생성 - application.yml
       - name: make application.yml
-        if: |
-          contains(github.ref, 'main') ||
-          contains(github.ref, 'develop')
+#        if: |
+#          contains(github.ref, 'main') ||
+#          contains(github.ref, 'develop')
         run: |
           mkdir ./src/main/resources # resources 폴더 생성
           cd ./src/main/resources # resources 폴더로 이동
@@ -71,7 +71,8 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           #envs: GITHUB_SHA
           script: |
-            sudo docker image rm ${{ secrets.DOCKERHUB_REPO }}
+            sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKERHUB_REPO }}
             sudo docker run -d -p 80:8080 ${{ secrets.DOCKERHUB_REPO }}
+            sudo docker container prune -f
             sudo docker image prune -f
