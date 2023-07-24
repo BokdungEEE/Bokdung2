@@ -22,8 +22,8 @@ spring:
     port: 6379
 
 jwt:
-  secret: ENC(Cjq5rNrZTz1nUCscd31mN4+wAHpNPrhP)
-  admin-secret: ENC(NeRx3rtwczWcUlepzVd9X7KsmlMTaeX6)
+  secret: ENC(NeB1pvbgR1Yi6WTZcRW9BgVJyJezO+UZEid6/FMKvCTy0iVKV6WiUkiDS1nmbhzwFAhBSDaeFcNBno2e82dPlg==)
+  admin-secret: ENC(NeB1pvbgR1Yi6WTZcRW9BgVJyJezO+UZEid6/FMKvCTy0iVKV6WiUkiDS1nmbhzwFAhBSDaeFcNBno2e82dPlg==)
   access-expired-time: 1209600000
   refresh-expired-time: 63200000000
   auth-header: Authorization
@@ -34,3 +34,7 @@ jwt:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+
+kakao:
+  client_id: ENC(vmbyPFHGU8STLsoNbJt2I2JL42OrVD/h3S21M1G08P27vvUyZhDkHJ6bgaJ7fCdQ)
+  redirect_uri: ENC(neB35XN+3KizNsqkh1QdLyAxHqSkdiq2caLZu8VLV5LnyonSDfDpn8sB0cr/56H+/mKLw28ZleI=)
