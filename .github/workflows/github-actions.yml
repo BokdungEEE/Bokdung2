@@ -2,10 +2,9 @@
 name: CI/CD using github actions & docker
 
 # event trigger
-# main이나 develop 브랜치에 push가 되었을 때 실행
 on:
   push:
-    branches: [ "main", "feature/deploy", "master" ]
+    branches: [ "main", "master" ]
 
 permissions:
   contents: read
@@ -37,19 +36,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-#      # 환경 yml 파일 생성 - application.yml
-#      - name: make application.yml
-#        run: |
-#          touch ./src/main/resources/application.properties
-#          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-#          cat ./src/main/resources/application.properties
-
       # gradle build
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build -Pjasypt.encryptor.password=${{ secrets.APPLICATION_SECRET }}
-#        run: ./gradlew build
 
       # docker build & push to production
       - name: Docker build & push to prod
