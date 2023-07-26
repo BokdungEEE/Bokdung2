@@ -1,5 +1,6 @@
 package com.bokdung2.global.utils;
 
+import com.bokdung2.user.entity.User;
 import com.bokdung2.user.exception.TokenExpirationException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -71,11 +72,11 @@ public class TokenUtils {
     refreshExTime = value;
   }
 
-//  public String createToken(User user) {
-//    String access_token = this.createAccessToken(user.getUserIdx(), user.getNickname());
-//    String refresh_token = this.createRefreshToken(user.getUserIdx(), user.getNickname());
-//    return access_token + COMMA + refresh_token;
-//  }
+  public String createToken(User user) {
+    String access_token = this.createAccessToken(user.getUserIdx(), user.getUsername());
+    String refresh_token = this.createRefreshToken(user.getUserIdx(), user.getUsername());
+    return access_token + COMMA + refresh_token;
+  }
 
   public String createAccessToken(Long userIdx, String nickname) {
     Claims claims = Jwts.claims()
