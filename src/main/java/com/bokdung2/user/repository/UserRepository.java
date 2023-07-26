@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
   User findByKakaoIdAndProviderAndIsEnable(Long kakaoId, Provider provider, Boolean isEnable);
+
+  Optional<User> findByUserIdxAndIsEnable(Long userIdx, Boolean isEnable);
 }

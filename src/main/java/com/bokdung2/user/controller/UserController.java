@@ -1,10 +1,14 @@
 package com.bokdung2.user.controller;
 
 import com.bokdung2.global.dto.ResponseCustom;
-import com.bokdung2.user.dto.response.UserLoginRes;
+import com.bokdung2.global.resolver.Auth;
+import com.bokdung2.global.resolver.IsLogin;
+import com.bokdung2.global.resolver.LoginStatus;
+import com.bokdung2.user.dto.response.LoginTokenRes;
 import com.bokdung2.user.service.KakaoService;
 import com.bokdung2.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +32,15 @@ public class UserController {
   // 카카오 로그인 콜백
   @ResponseBody
   @GetMapping("/callback/kakao")
-  public ResponseCustom<?> kakaoCallback(@RequestParam String code) {
+  public ResponseCustom<LoginTokenRes> kakaoCallback(@RequestParam String code) {
     return ResponseCustom.OK(userService.kakaoLogin(code));
+  }
+
+  @Auth
+  @ResponseBody
+  @PostMapping("/logout")
+  public ResponseCustom<Void> logout(@IsLogin LoginStatus loginStatus) {
+    userService.logout(loginStatus.getUserIdx());
+    return ResponseCustom.OK();
   }
 }

@@ -5,4 +5,6 @@ import org.springframework.stereotype.Component;
 
 public interface UserService {
   LoginTokenRes kakaoLogin(String code);
+
+  void logout(Long userIdx);
 }
