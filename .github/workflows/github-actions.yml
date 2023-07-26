@@ -41,7 +41,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build -Pjasypt.encryptor.password=${{ secrets.APPLICATION_SECRET }}
+        run: ./gradlew build -Djasypt.encryptor.password=${{ secrets.APPLICATION_SECRET }}
 
       # docker build & push to production
       - name: Docker build & push to prod
