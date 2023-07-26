@@ -5,7 +5,7 @@ name: CI/CD using github actions & docker
 # main이나 develop 브랜치에 push가 되었을 때 실행
 on:
   push:
-    branches: [ "main", "feature/deploy", "master" ]
+    branches: [ "main", "*/deploy", "master" ]
 
 permissions:
   contents: read
@@ -13,6 +13,8 @@ permissions:
 jobs:
   CI-CD:
     runs-on: ubuntu-latest
+    env:
+      JASYPT_PASSWORD: ${{ secrets.APPLICATION_SECRET }} # 중괄호 2개 사용해야함
     steps:
 
       # JDK setting - github actions에서 사용할 JDK 설정 (프로젝트나 AWS의 java 버전과 달라도 무방)
@@ -34,17 +36,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # 환경 yml 파일 생성 - application.yml
-      - name: make application.yml
-        if: |
-          contains(github.ref, 'main') ||
-          contains(github.ref, 'develop')
-        run: |
-          mkdir ./src/main/resources # resources 폴더 생성
-          cd ./src/main/resources # resources 폴더로 이동
-          touch ./application.yml # application.yml 생성
-          echo "${{ secrets.APPLICATION }}" > ./application.yml # github actions에서 설정한 값을 application.yml 파일에 쓰기
-        shell: bash
+#      # 환경 yml 파일 생성 - application.yml
+#      - name: make application.yml
+##        if: |
+##          contains(github.ref, 'main') ||
+##          contains(github.ref, 'develop')
+#        run: |
+#          mkdir ./src/main/resources # resources 폴더 생성
+#          cd ./src/main/resources # resources 폴더로 이동
+#          touch ./application.yml # application.yml 생성
+#          echo "${{ secrets.APPLICATION }}" > ./application.yml # github actions에서 설정한 값을 application.yml 파일에 쓰기
+#        shell: bash
 
       # gradle build
       - name: Grant execute permission for gradlew
@@ -75,4 +77,5 @@ jobs:
             sudo docker image rm ${{ secrets.DOCKERHUB_REPO }}
             sudo docker pull ${{ secrets.DOCKERHUB_REPO }}
             sudo docker run -d -p 80:8080 ${{ secrets.DOCKERHUB_REPO }}
+#                        sudo docker run -d -p 80:8080 -e encryptKey=${{ secrets.APPLICATION_SECRET }} ${{ secrets.DOCKERHUB_REPO }}
             sudo docker image prune -f
