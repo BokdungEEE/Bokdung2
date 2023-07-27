@@ -40,9 +40,9 @@ jobs:
       # 환경 yml 파일 생성 - application.yml
       - name: make application.yml
         run: |
-          touch ./src/main/resources/application.properties
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-          cat ./src/main/resources/application.properties
+          touch ./src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
+          cat ./src/main/resources/application.yml
 
       # gradle build
       - name: Grant execute permission for gradlew
