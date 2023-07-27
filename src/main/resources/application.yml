@@ -33,5 +33,5 @@ jwt:
 
 kakao:
   client_id: 2d7c89ba36b0d1de918654da7d9035db
-  redirect_uri: http://localhost:8080/api/users/callback/kakao
+  redirect_uri: http://52.79.179.56/api/users/callback/kakao
 
