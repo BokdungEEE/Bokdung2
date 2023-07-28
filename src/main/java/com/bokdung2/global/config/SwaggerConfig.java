@@ -17,16 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig extends WebMvcConfigurationSupport {
-
-  //리소스 핸들러 설
-  @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-    registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-    registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-  }
-
+public class SwaggerConfig {
 
   // API마다 구분짓기 위한 설정.
   @Bean
