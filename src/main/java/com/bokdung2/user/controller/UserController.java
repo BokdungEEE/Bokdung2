@@ -36,6 +36,13 @@ public class UserController {
     return ResponseCustom.OK(userService.kakaoLogin(code));
   }
 
+  // test controller
+  @ResponseBody
+  @GetMapping("/test")
+  public ResponseCustom<?> test() {
+    return ResponseCustom.OK("test");
+  }
+
   @Auth
   @ResponseBody
   @PostMapping("/logout")
@@ -43,4 +50,5 @@ public class UserController {
     userService.logout(loginStatus.getUserIdx());
     return ResponseCustom.OK();
   }
+
 }
