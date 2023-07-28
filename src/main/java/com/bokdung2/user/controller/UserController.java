@@ -31,4 +31,11 @@ public class UserController {
   public ResponseCustom<?> kakaoCallback(@RequestParam String code) {
     return ResponseCustom.OK(userService.kakaoLogin(code));
   }
+
+  // test controller
+  @ResponseBody
+  @GetMapping("/test")
+  public ResponseCustom<?> test() {
+    return ResponseCustom.OK("test");
+  }
 }
