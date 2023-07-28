@@ -21,10 +21,6 @@ spring:
     host: localhost
     port: 6379
 
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-
 jwt:
   secret: ENC(NeB1pvbgR1Yi6WTZcRW9BgVJyJezO+UZEid6/FMKvCTy0iVKV6WiUkiDS1nmbhzwFAhBSDaeFcNBno2e82dPlg==)
   admin-secret: ENC(NeB1pvbgR1Yi6WTZcRW9BgVJyJezO+UZEid6/FMKvCTy0iVKV6WiUkiDS1nmbhzwFAhBSDaeFcNBno2e82dPlg==)
