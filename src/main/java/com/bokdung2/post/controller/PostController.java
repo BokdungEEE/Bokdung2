@@ -5,11 +5,13 @@ import com.bokdung2.global.resolver.Auth;
 import com.bokdung2.global.resolver.IsLogin;
 import com.bokdung2.global.resolver.LoginStatus;
 import com.bokdung2.post.dto.request.PostRequest;
+import com.bokdung2.post.dto.response.PostResponse;
 import com.bokdung2.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -40,5 +42,15 @@ public class PostController {
   )
   {
     return ResponseCustom.OK(postService.countPost(loginStatus.getUserIdx()));
+  }
+
+  @Auth
+  @ResponseBody
+  @GetMapping("")
+  public ResponseCustom<PostResponse> getPost(
+          @IsLogin LoginStatus loginStatus
+  )
+  {
+    return ResponseCustom.OK(postService.getPost(loginStatus.getUserIdx()));
   }
 }

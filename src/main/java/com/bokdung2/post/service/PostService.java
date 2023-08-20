@@ -4,6 +4,7 @@ import com.bokdung2.card.entity.Card;
 import com.bokdung2.card.exception.CardNotFoundException;
 import com.bokdung2.card.repository.CardRepository;
 import com.bokdung2.post.dto.request.PostRequest;
+import com.bokdung2.post.dto.response.PostResponse;
 import com.bokdung2.post.entity.Post;
 import com.bokdung2.post.repository.PostRepository;
 import com.bokdung2.user.entity.User;
@@ -13,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +40,11 @@ public class PostService {
   public Integer countPost(Long userIdx) {
     User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
     return postRepository.countByUserAndIsEnable(user, true);
+  }
+
+  public PostResponse getPost(Long userIdx) {
+    User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
+    List<Post> posts = postRepository.findByUserAndIsEnable(user, true);
+    return PostResponse.toDto(posts);
   }
 }
