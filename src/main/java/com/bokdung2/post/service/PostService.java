@@ -33,4 +33,9 @@ public class PostService {
 
     postRepository.save(Post.toEntity(receiver, card, postRequest));
   }
+
+  public Integer countPost(Long userIdx) {
+    User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
+    return postRepository.countByUserAndIsEnable(user, true);
+  }
 }

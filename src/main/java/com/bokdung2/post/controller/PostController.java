@@ -31,4 +31,14 @@ public class PostController {
     postService.savePost(loginStatus.getUserIdx(), uuid, postRequest);
     return ResponseCustom.OK();
   }
+
+  @Auth
+  @ResponseBody
+  @GetMapping("/count")
+  public ResponseCustom<Integer> countPost(
+          @IsLogin LoginStatus loginStatus
+  )
+  {
+    return ResponseCustom.OK(postService.countPost(loginStatus.getUserIdx()));
+  }
 }
