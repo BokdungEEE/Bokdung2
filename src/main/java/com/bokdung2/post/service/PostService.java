@@ -4,8 +4,10 @@ import com.bokdung2.card.entity.Card;
 import com.bokdung2.card.exception.CardNotFoundException;
 import com.bokdung2.card.repository.CardRepository;
 import com.bokdung2.post.dto.request.PostRequest;
+import com.bokdung2.post.dto.response.DetailPostResponse;
 import com.bokdung2.post.dto.response.PostResponse;
 import com.bokdung2.post.entity.Post;
+import com.bokdung2.post.exception.PostNotFoundException;
 import com.bokdung2.post.repository.PostRepository;
 import com.bokdung2.user.entity.User;
 import com.bokdung2.user.exception.UserNotFoundException;
@@ -46,5 +48,11 @@ public class PostService {
     User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
     List<Post> posts = postRepository.findByUserAndIsEnable(user, true);
     return PostResponse.toDto(posts);
+  }
+
+  public DetailPostResponse getDetailPost(Long userIdx, Long postIdx) {
+    User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
+    Post post = postRepository.findByPostIdxAndIsEnable(postIdx, true).orElseThrow(PostNotFoundException::new);
+    return DetailPostResponse.toDto(post);
   }
 }
