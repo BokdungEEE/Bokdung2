@@ -8,7 +8,6 @@ import com.bokdung2.user.dto.response.LoginTokenRes;
 import com.bokdung2.user.service.KakaoService;
 import com.bokdung2.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
