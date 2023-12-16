@@ -7,12 +7,22 @@ import com.bokdung2.global.resolver.LoginStatus;
 import com.bokdung2.user.dto.response.LoginTokenRes;
 import com.bokdung2.user.service.KakaoService;
 import com.bokdung2.user.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.net.URI;
+import java.util.Base64;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,8 +32,12 @@ public class UserController {
   private final UserService userService;
   private final KakaoService kakaoService;
 
+  @Value("${kakao.front_redirect_uri}")
+  private String front_redirect_uri;
+
   // 카카오 로그인 url 요청
   @GetMapping("/login/kakao")
+  @ResponseBody
   public ResponseCustom<?> kakaoLogin(HttpSession session) {
     String httpHeaders = kakaoService.getAuthorizationUrl(session);
     return ResponseCustom.OK(httpHeaders);
@@ -32,8 +46,25 @@ public class UserController {
   // 카카오 로그인 콜백
   @ResponseBody
   @GetMapping("/callback/kakao")
-  public ResponseCustom<LoginTokenRes> kakaoCallback(@RequestParam String code) {
-    return ResponseCustom.OK(userService.kakaoLogin(code));
+  public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws JsonProcessingException {
+    LoginTokenRes tokenResponse = userService.kakaoLogin(code);
+    String accessToken = tokenResponse.getAccess_token();
+    String refreshToken = tokenResponse.getRefresh_token();
+
+    Map<String, String> parameters = Map.of(
+            "accessToken", accessToken,
+            "refreshToken", refreshToken
+    );
+    String parameterJson = new ObjectMapper().writeValueAsString(parameters);
+    String parameterBase64 = Base64.getEncoder().encodeToString(parameterJson.getBytes());
+
+    String queryParameter = "?parameter=" + parameterBase64;
+    String redirect_uri = this.front_redirect_uri + queryParameter;
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(URI.create(redirect_uri));
+
+    return new ResponseEntity<>( headers, HttpStatus.MOVED_PERMANENTLY);
   }
 
   // test controller
