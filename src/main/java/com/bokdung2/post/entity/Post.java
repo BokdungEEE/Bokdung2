@@ -2,8 +2,9 @@ package com.bokdung2.post.entity;
 
 import com.bokdung2.card.entity.Card;
 import com.bokdung2.global.entity.BaseEntity;
-import com.bokdung2.message.entity.Message;
+import com.bokdung2.post.dto.request.PostRequest;
 import com.bokdung2.user.entity.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,14 +24,27 @@ public class Post extends BaseEntity {
   @JoinColumn(name="userIdx")
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "messageIdx")
-  private Message message;
-
   @OneToOne
   private Card card;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private PostType postType;
+  private String message;
+
+  private String senderNickname;
+
+  @Builder
+  public Post(User user, Card card, String message, String senderNickname) {
+    this.user = user;
+    this.card = card;
+    this.message = message;
+    this.senderNickname = senderNickname;
+  }
+
+  public static Post toEntity(User user, Card card, PostRequest postRequest) {
+    return Post.builder()
+            .user(user)
+            .card(card)
+            .message(postRequest.getMessage())
+            .senderNickname(postRequest.getNickname())
+            .build();
+  }
 }

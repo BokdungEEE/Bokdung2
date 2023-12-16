@@ -7,10 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
   User findByKakaoIdAndProviderAndIsEnable(Long kakaoId, Provider provider, Boolean isEnable);
 
   Optional<User> findByUserIdxAndIsEnable(Long userIdx, Boolean isEnable);
+
+  Optional<User> findByUuidAndIsEnable(UUID uuid, Boolean isEnable);
 }
