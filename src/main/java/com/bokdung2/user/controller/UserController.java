@@ -4,13 +4,14 @@ import com.bokdung2.global.dto.ResponseCustom;
 import com.bokdung2.global.resolver.Auth;
 import com.bokdung2.global.resolver.IsLogin;
 import com.bokdung2.global.resolver.LoginStatus;
+import com.bokdung2.post.service.PostService;
+import com.bokdung2.user.dto.response.GetCountRes;
 import com.bokdung2.user.dto.response.LoginTokenRes;
 import com.bokdung2.user.service.KakaoService;
 import com.bokdung2.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class UserController {
 
   private final UserService userService;
   private final KakaoService kakaoService;
+  private final PostService postService;
 
   @Value("${kakao.front_redirect_uri}")
   private String redirectUri;
@@ -47,12 +49,12 @@ public class UserController {
   @ResponseBody
   @GetMapping("/callback/kakao")
   public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws JsonProcessingException {
-      LoginTokenRes loginResponse = userService.kakaoLogin(code);
+    LoginTokenRes loginResponse = userService.kakaoLogin(code);
 
     Map<String, String> parameters = Map.of(
             "accessToken", loginResponse.getAccess_token(),
             "refreshToken", loginResponse.getRefresh_token(),
-            "userIdx", loginResponse.getUserIdx().toString()
+            "uuid", loginResponse.getUuid().toString()
     );
 
     String jsonParameter = new ObjectMapper().writeValueAsString(parameters);
@@ -82,18 +84,29 @@ public class UserController {
   }
 
   @ResponseBody
-  @GetMapping("/{userIdx}/exists")
-  public ResponseCustom<Boolean> getUserIsExists(@PathVariable("userIdx") long userIdx){
-    boolean exists = userService.checkIsUserExists(userIdx);
+  @GetMapping("/{uuid}/exists")
+  public ResponseCustom<Boolean> getUserIsExists(@PathVariable("uuid") String uuid){
+    boolean exists = userService.checkUserExists(uuid);
 
     return ResponseCustom.OK(exists);
   }
 
   @ResponseBody
-  @GetMapping("/{userIdx}/name")
-  public ResponseCustom<String> getUserName(@PathVariable("userIdx") long userIdx) {
-    String username = userService.getUserName(userIdx);
+  @GetMapping("/{uuid}/name")
+  public ResponseCustom<String> getUserName(@PathVariable("uuid") String uuid) {
+    String username = userService.getUserName(uuid);
 
     return ResponseCustom.OK(username);
+  }
+
+  @Auth
+  @ResponseBody
+  @GetMapping("/counts")
+  public ResponseCustom<GetCountRes> getCounts(@IsLogin LoginStatus loginStatus){
+    long chance = userService.getChances(loginStatus.getUserIdx());
+    long received = postService.getPost(loginStatus.getUserIdx()).getPostCount();
+
+    GetCountRes response = GetCountRes.builder().chance(chance).received(received).build();
+    return ResponseCustom.OK(response);
   }
 }
