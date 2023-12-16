@@ -24,6 +24,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @Controller
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 public class UserController {
