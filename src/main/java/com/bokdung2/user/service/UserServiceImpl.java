@@ -3,6 +3,7 @@ package com.bokdung2.user.service;
 import com.bokdung2.global.utils.TokenUtils;
 import com.bokdung2.global.utils.redis.RedisTemplateService;
 import com.bokdung2.user.dto.assembler.UserAssembler;
+import com.bokdung2.user.dto.response.GetCountRes;
 import com.bokdung2.user.dto.response.LoginTokenRes;
 import com.bokdung2.user.entity.Provider;
 import com.bokdung2.user.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +51,7 @@ public class UserServiceImpl implements UserService{
 
     signInUser.login();
     LoginTokenRes loginTokenRes = LoginTokenRes.toDto(tokenUtils.createToken(signInUser));
-    loginTokenRes.setUserIdx(signInUser.getUserIdx());
+    loginTokenRes.setUuid(signInUser.getUuid());
     redisTemplateService.setUserRefreshToken(String.valueOf(signInUser.getUserIdx()),loginTokenRes.getRefresh_token());
     return loginTokenRes;
   }
@@ -64,15 +66,29 @@ public class UserServiceImpl implements UserService{
 
   @Override
   @Transactional
-  public boolean checkIsUserExists(long userIdx) {
-    Optional<User> user = userRepository.findByUserIdxAndIsEnable(userIdx, true);
+  public boolean checkUserExists(String uuid) {
+    Optional<User> user = userRepository.findByUuidAndIsEnable(UUID.fromString(uuid), true);
     return user.isPresent();
   }
 
   @Override
   @Transactional
-  public String getUserName(long userIdx) {
-    User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
+  public String getUserName(String uuid) {
+    User user = userRepository.findByUuidAndIsEnable(UUID.fromString(uuid), true).orElseThrow(UserNotFoundException::new);
     return user.getUsername();
+  }
+
+  @Override
+  @Transactional
+  public String getUserName(long Idx) {
+    User user = userRepository.findByUserIdxAndIsEnable(Idx, true).orElseThrow(UserNotFoundException::new);
+    return user.getUsername();
+  }
+
+  @Override
+  public long getChances(Long userIdx){
+    User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
+
+    return user.getChance();
   }
 }
