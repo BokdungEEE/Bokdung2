@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService{
 
     signInUser.login();
     LoginTokenRes loginTokenRes = LoginTokenRes.toDto(tokenUtils.createToken(signInUser));
+    loginTokenRes.setUserIdx(signInUser.getUserIdx());
     redisTemplateService.setUserRefreshToken(String.valueOf(signInUser.getUserIdx()),loginTokenRes.getRefresh_token());
     return loginTokenRes;
   }
@@ -66,5 +67,12 @@ public class UserServiceImpl implements UserService{
   public boolean checkIsUserExists(long userIdx) {
     Optional<User> user = userRepository.findByUserIdxAndIsEnable(userIdx, true);
     return user.isPresent();
+  }
+
+  @Override
+  @Transactional
+  public String getUserName(long userIdx) {
+    User user = userRepository.findByUserIdxAndIsEnable(userIdx, true).orElseThrow(UserNotFoundException::new);
+    return user.getUsername();
   }
 }

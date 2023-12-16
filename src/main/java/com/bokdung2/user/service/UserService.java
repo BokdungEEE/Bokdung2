@@ -13,4 +13,6 @@ public interface UserService {
   void logout(Long userIdx);
 
   boolean checkIsUserExists(long userIdx);
+
+  String getUserName(long userIdx);
 }

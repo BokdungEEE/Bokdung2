@@ -51,7 +51,8 @@ public class UserController {
 
     Map<String, String> parameters = Map.of(
             "accessToken", loginResponse.getAccess_token(),
-            "refreshToken", loginResponse.getRefresh_token()
+            "refreshToken", loginResponse.getRefresh_token(),
+            "userIdx", loginResponse.getUserIdx().toString()
     );
 
     String jsonParameter = new ObjectMapper().writeValueAsString(parameters);
@@ -86,5 +87,13 @@ public class UserController {
     boolean exists = userService.checkIsUserExists(userIdx);
 
     return ResponseCustom.OK(exists);
+  }
+
+  @ResponseBody
+  @GetMapping("/{userIdx}/name")
+  public ResponseCustom<String> getUserName(@PathVariable("userIdx") long userIdx) {
+    String username = userService.getUserName(userIdx);
+
+    return ResponseCustom.OK(username);
   }
 }
