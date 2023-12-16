@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.net.URI;
+import java.util.Base64;
 import java.util.Map;
 
 @Controller
@@ -35,6 +36,7 @@ public class UserController {
 
   // 카카오 로그인 url 요청
   @GetMapping("/login/kakao")
+  @ResponseBody
   public ResponseCustom<?> kakaoLogin(HttpSession session) {
     String httpHeaders = kakaoService.getAuthorizationUrl(session);
     return ResponseCustom.OK(httpHeaders);
@@ -52,7 +54,8 @@ public class UserController {
     );
 
     String jsonParameter = new ObjectMapper().writeValueAsString(parameters);
-    String queryParameter = "?parameter=" + jsonParameter;
+    String baseParameter = Base64.getEncoder().encodeToString(jsonParameter.getBytes());
+    String queryParameter = "?parameter=" + baseParameter;
     String redirectUri = this.redirectUri + queryParameter;
 
     HttpHeaders headers = new HttpHeaders();
