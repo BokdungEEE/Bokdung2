@@ -8,6 +8,8 @@ import com.bokdung2.post.dto.response.DetailPostResponse;
 import com.bokdung2.post.dto.request.PostRequest;
 import com.bokdung2.post.dto.response.PostResponse;
 import com.bokdung2.post.service.PostService;
+import com.bokdung2.user.entity.User;
+import com.bokdung2.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +22,25 @@ import java.util.UUID;
 public class PostController {
 
   private final PostService postService;
+  private final UserService userService;
 
   // 포스트 저장
   @Auth
   @ResponseBody
   @PostMapping("/save/{uuid}")
+  @CrossOrigin
   public ResponseCustom<Void> savePost(
           @IsLogin LoginStatus loginStatus,
           @PathVariable UUID uuid,
           @RequestBody PostRequest postRequest
   )
   {
+    if (postRequest.getNickname() == null){
+      long idx = loginStatus.getUserIdx();
+      postRequest.setNickname(
+        userService.getUserName(idx)
+      );
+    }
     postService.savePost(loginStatus.getUserIdx(), uuid, postRequest);
     return ResponseCustom.OK();
   }
