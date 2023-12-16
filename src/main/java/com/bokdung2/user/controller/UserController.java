@@ -80,4 +80,11 @@ public class UserController {
     return ResponseCustom.OK();
   }
 
+  @ResponseBody
+  @GetMapping("/{userIdx}/exists")
+  public ResponseCustom<Boolean> getUserIsExists(@PathVariable("userIdx") long userIdx){
+    boolean exists = userService.checkIsUserExists(userIdx);
+
+    return ResponseCustom.OK(exists);
+  }
 }

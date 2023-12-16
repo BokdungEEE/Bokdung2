@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService{
     return signIn(userInfo);
   }
 
+  @Override
   @Transactional
   public LoginTokenRes signIn(HashMap<String, String> userInfo)
   {
@@ -58,4 +61,10 @@ public class UserServiceImpl implements UserService{
     user.logout();
   }
 
+  @Override
+  @Transactional
+  public boolean checkIsUserExists(long userIdx) {
+    Optional<User> user = userRepository.findByUserIdxAndIsEnable(userIdx, true);
+    return user.isPresent();
+  }
 }
